@@ -7,10 +7,30 @@ import { Room } from './src/Room.js'
 
 const app = express()
 const server = http.createServer(app)
-const allowedOrigins = (process.env.CLIENT_ORIGIN || 'http://localhost:5173').split(',').map(s => s.trim())
-app.use(cors({ origin: allowedOrigins, credentials: true }))
+const allowedOrigins = (process.env.CLIENT_ORIGIN || 'http://localhost:5173').split(',').map(s => s.trim()).filter(Boolean)
+const isAllowedOrigin = origin => {
+  if (!origin) return true
+  return allowedOrigins.includes(origin) || /https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) || /https?:\/\/.*\.vercel\.app$/i.test(origin)
+}
+app.use(cors({
+  origin: (origin, callback) => {
+    if (isAllowedOrigin(origin)) return callback(null, true)
+    callback(new Error('Not allowed by CORS'))
+  },
+  credentials: true
+}))
 app.use(express.json())
-const io = new Server(server, { cors: { origin: allowedOrigins, methods: ['GET','POST'], credentials: true }, transports: ['websocket','polling'] })
+const io = new Server(server, {
+  cors: {
+    origin: (origin, callback) => {
+      if (isAllowedOrigin(origin)) return callback(null, true)
+      callback(new Error('Not allowed by CORS'))
+    },
+    methods: ['GET','POST'],
+    credentials: true
+  },
+  transports: ['websocket','polling']
+})
 const rooms = new Map()
 const playerRoom = new Map()
 

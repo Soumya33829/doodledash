@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { io } from 'socket.io-client'
 import { Palette, Users, Trophy, Clock3, Pencil, Eraser, Undo2, Trash2, Send, Copy, DoorOpen, Sparkles, Crown, Volume2 } from 'lucide-react'
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001'
+const SERVER_URL = (import.meta.env.VITE_SERVER_URL || 'https://server-five-henna-66.vercel.app').replace(/\/$/, '')
 const socket = io(SERVER_URL, { autoConnect: false, transports: ['polling', 'websocket'] })
 const defaults = { maxPlayers: 8, rounds: 3, drawTime: 80, wordCount: 3, hints: 2, isPrivate: true }
 const colors = ['#22223b','#f94144','#f3722c','#f9c74f','#90be6d','#43aa8b','#277da1','#577590','#9b5de5','#f15bb5','#ffffff']
