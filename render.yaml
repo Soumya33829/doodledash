@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: doodledash-server
+    runtime: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: CLIENT_ORIGIN
+        sync: false
