@@ -57,7 +57,9 @@ io.on('connection', socket => {
     const room=rooms.get(playerRoom.get(socket.id)); if(!room) return
     if(room.hostId!==socket.id) return sendError(socket,'Only the host can start the game.')
     if(room.players.length<2) return sendError(socket,'At least two players are needed.')
-    room.startGame();emitRoom(room,'game_state',room.gameStateFor(null))
+    room.startGame();
+    emitRoom(room,'room_state',publicRoom(room))
+    emitRoom(room,'game_state',room.gameStateFor(null))
     room.beginRound(io)
   })
   socket.on('word_chosen', ({word}={}) => {
